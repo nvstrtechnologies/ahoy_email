@@ -74,7 +74,7 @@ module AhoyEmail
     def track_open
       if html_part?
         raw_source = (message.html_part || message).body.raw_source
-        regex = /<\/body>/i
+        regex = /<body>/i
         url =
           url_for(
             controller: "ahoy/messages",
@@ -86,7 +86,7 @@ module AhoyEmail
 
         # try to add before body tag
         if raw_source.match(regex)
-          raw_source.gsub!(regex, "#{pixel}\\0")
+          raw_source.gsub!(regex, "\\0#{pixel}")
         else
           raw_source << pixel
         end
