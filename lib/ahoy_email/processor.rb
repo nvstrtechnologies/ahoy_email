@@ -73,7 +73,9 @@ module AhoyEmail
 
     def track_open
       if html_part?
-        raw_source = (message.html_part || message).body.raw_source
+        part = message.html_part || message
+        raw_source = part.body.raw_source
+
         regex = /<body>/i
         url =
           url_for(
@@ -82,13 +84,13 @@ module AhoyEmail
             id: ahoy_message.token,
             format: "gif"
           )
-        pixel = ActionController::Base.helpers.image_tag(url, size: "1x1", alt: nil)
+        pixel = ActionController::Base.helpers.image_tag(url, size: "1x1", alt: "")
 
-        # try to add before body tag
+        # try to add after body tag
         if raw_source.match(regex)
-          raw_source.gsub!(regex, "\\0#{pixel}")
+          part.body = raw_source.gsub(regex, "\\0#{pixel}")
         else
-          raw_source << pixel
+          part.body = raw_source + pixel
         end
       end
     end
