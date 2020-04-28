@@ -76,7 +76,7 @@ module AhoyEmail
         part = message.html_part || message
         raw_source = part.body.raw_source
 
-        regex = /<body>/i
+        regex = /<body.*>/im
         url =
           url_for(
             controller: "ahoy/messages",
